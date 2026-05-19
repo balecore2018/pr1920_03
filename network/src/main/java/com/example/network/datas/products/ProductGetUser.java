@@ -6,6 +6,10 @@ import com.example.network.domains.common.Settings;
 
 import org.jsoup.Jsoup;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 
 public class ProductGetUser extends MyAsyncTask {
