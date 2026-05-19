@@ -14,10 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Pr1920_03">
         <activity
-            android:name=".ProductActivity"
+            android:name=".presentations.ProductActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".presentations.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

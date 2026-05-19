@@ -1,4 +1,4 @@
-package com.example.pr1920_03;
+package com.example.pr1920_03.presentations;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +15,8 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.example.pr1920_03.R;
 
 public class ProductActivity extends AppCompatActivity {
 
