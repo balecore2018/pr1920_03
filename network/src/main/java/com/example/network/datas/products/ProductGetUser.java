@@ -4,13 +4,10 @@ import com.example.network.domains.apis.MyAsyncTask;
 import com.example.network.domains.callbacks.MyResponseCallback;
 import com.example.network.domains.common.Settings;
 
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Connection;
 
 public class ProductGetUser extends MyAsyncTask {
 
@@ -28,7 +25,7 @@ public class ProductGetUser extends MyAsyncTask {
 
         try {
 
-            Connection.Response response = Jsoup.connect(Settings.URL + "/api/product/get_product_by_user")
+            Connection.Response response = Jsoup.connect(Settings.url("/api/product/get_product_by_user"))
                     .ignoreContentType(true)
                     .ignoreHttpErrors(true)
                     .method(Connection.Method.GET)
@@ -38,7 +35,7 @@ public class ProductGetUser extends MyAsyncTask {
 
             return response.statusCode() == 200 ? response.body() : "Error: " + response.body();
 
-        } catch (RuntimeException e) {
+        } catch (IOException e) {
             return "Error: " + e.getMessage();
         }
 

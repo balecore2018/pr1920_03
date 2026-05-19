@@ -52,11 +52,12 @@ public class ProductCreate  extends MyAsyncTask {
             params.put("Expenditure", product.expenditure);
             params.put("Price", String.valueOf(product.price));
 
-            Connection.Response response = Jsoup.connect(Settings.URL + "/api/product/create")
+            Connection.Response response = Jsoup.connect(Settings.url("/api/product/create"))
                     .ignoreContentType(true)
                     .ignoreHttpErrors(true)
                     .method(Connection.Method.POST)
                     .header("token", token)
+                    .data(params)
                     .data("ImageFile", tempFile.getName(), new java.io.FileInputStream(tempFile))
                     .execute();
 
