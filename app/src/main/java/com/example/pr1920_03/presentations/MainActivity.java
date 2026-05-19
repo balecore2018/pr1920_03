@@ -9,13 +9,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.network.datas.products.ProductGet;
+import com.example.network.datas.products.ProductGetUser;
 import com.example.network.domains.callbacks.MyResponseCallback;
+import com.example.network.domains.common.Settings;
 import com.example.network.domains.models.Product;
 import com.example.pr1920_03.R;
 import com.example.pr1920_03.domains.PermissionManager;
@@ -29,11 +32,19 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "PRODUCT GET";
+    private static final String TAG = "PRODUCT GET USER";
+    public static final String TOKEN = Settings.DEMO_TOKEN;
 
     private View bthOpenAddProduct;
     private LinearLayout llContent;
     private List<Product> products = new ArrayList<>();
+
+    private final ActivityResultLauncher<Intent> productActivityLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    productGetUser();
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,14 +63,14 @@ public class MainActivity extends AppCompatActivity {
         llContent = findViewById(R.id.llContent);
 
         bthOpenAddProduct.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, ProductActivity.class))
+                productActivityLauncher.launch(new Intent(MainActivity.this, ProductActivity.class))
         );
 
-        productGet();
+        productGetUser();
     }
 
-    public void productGet() {
-        ProductGet requestProductGet = new ProductGet(new MyResponseCallback() {
+    public void productGetUser() {
+        ProductGetUser requestProductGetUser = new ProductGetUser(TOKEN, new MyResponseCallback() {
             @Override
             public void onCompile(String result) {
                 Log.d(TAG, result);
@@ -68,6 +79,11 @@ public class MainActivity extends AppCompatActivity {
                         new TypeToken<ArrayList<Product>>() {
                         }.getType()
                 );
+
+                if (products == null) {
+                    products = new ArrayList<>();
+                }
+
                 createElement();
             }
 
@@ -77,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        requestProductGet.execute();
+        requestProductGetUser.execute();
     }
 
     public void createElement() {
