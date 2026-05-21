@@ -2,6 +2,11 @@ package com.example.pr1920_03.presentations;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -64,5 +69,26 @@ public class MainActivity extends AppCompatActivity {
         if (openFragment instanceof ProductFragment) {
             openFragment.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
+
+        super.onCreateContextMenu(menu, view, menuInfo);
+        menu.add(1,101, Menu.NONE,"Изменить");
+        menu.add(2,102, Menu.NONE,"Удалить");
+
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        if(item.getGroupId() == 1)
+            Toast.makeText(this, "Изменение элемента", Toast.LENGTH_SHORT).show();
+        else if (item.getGroupId() == 2)
+            Toast.makeText(this, "Удаление элемента", Toast.LENGTH_SHORT).show();
+
+        return true;
+
     }
 }

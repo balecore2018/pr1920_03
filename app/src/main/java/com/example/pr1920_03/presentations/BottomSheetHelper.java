@@ -32,14 +32,13 @@ public class BottomSheetHelper extends BottomSheetDialog {
 
         if (galleryClickListener != null) {
             bthGallery.Bth.setOnClickListener(v -> {
-                galleryClickListener.onClick(v);
-                dismiss();
+                ((ProductFragment)MainActivity.init.openFragment).openGallery();
             });
         }
 
         if (cameraClickListener != null) {
             bthCamera.Bth.setOnClickListener(v -> {
-                cameraClickListener.onClick(v);
+                ((ProductFragment)MainActivity.init.openFragment).openCamera();
                 dismiss();
             });
         }

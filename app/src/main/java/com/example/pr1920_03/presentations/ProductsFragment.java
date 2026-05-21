@@ -117,6 +117,8 @@ public class ProductsFragment extends Fragment {
             tvName.setText(product.name);
             tvPrice.setText(product.price + " ₽");
 
+            registerForContextMenu(itemProduct);
+
             llContent.addView(itemProduct);
         }
     }
