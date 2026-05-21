@@ -40,11 +40,11 @@ public class NavigationMenu extends Fragment {
         View view = inflater.inflate(R.layout.fragment_navigation_menu, container,false);
         List<MenuItem> Items = new ArrayList<>();
         Items.add(new MenuItem("Главная", R.drawable.ic_home));
-        Items.add(new MenuItem("Каталог", R.drawable.Ic_catalog));
+        Items.add(new MenuItem("Каталог", R.drawable.ic_catalog));
         Items.add(new MenuItem("Продукты", R.drawable.ic_order));
         Items.add(new MenuItem("Профиль", R.drawable.ic_user));
 
-        RecyclerView = view.findViewById(com.example.uicomponents.R.id.recycleView);
+        RecyclerView = view.findViewById(R.id.recycleView);
         RecyclerView.setLayoutManager(new GridLayoutManager(getContext(), Items.size()));
         Adapter = new MenuAdapter(Items, listner);
         RecyclerView.setAdapter(Adapter);

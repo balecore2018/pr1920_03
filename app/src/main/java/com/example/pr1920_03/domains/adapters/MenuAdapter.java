@@ -42,11 +42,11 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull MenuAdapter.ViewHolder holder, int position) {
 
        holder.Title.setText(Items.get(position).Title);
-       holder.Image.setImageResourse(Items.get(position).IdDrawable);
+       holder.Image.setImageResource(Items.get(position).IdDrawable);
 
        Integer SelectColor = position == SelectPosition ?
                Color.parseColor("#1A6FEE") :
-               Color.parseColor("B8C1CC");
+               Color.parseColor("#B8C1CC");
 
        holder.Title.setTextColor(SelectColor);
        holder.Image.setColorFilter(SelectColor);
@@ -76,8 +76,8 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
         public ViewHolder (@NonNull View itemView) {
 
             super(itemView);
-            Image = itemView.findViewById(com.example.uicomponents.R.id.imageView);
-            Title = itemView.findViewById(com.example.uicomponents.R.id.textView);
+            Image = itemView.findViewById(R.id.imageView);
+            Title = itemView.findViewById(R.id.textView);
             Parent = (LinearLayout) Image.getParent();
 
         }

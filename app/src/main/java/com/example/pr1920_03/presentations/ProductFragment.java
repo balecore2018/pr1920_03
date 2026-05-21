@@ -1,5 +1,7 @@
 package com.example.pr1920_03.presentations;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,38 +10,40 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.content.FileProvider;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 
 import com.example.network.datas.products.ProductCreate;
 import com.example.network.domains.callbacks.MyResponseCallback;
 import com.example.network.domains.common.Settings;
 import com.example.network.domains.models.Product;
 import com.example.pr1920_03.R;
+import com.example.pr1920_03.domains.callbacks.OnTabClickListner;
 
 import java.io.File;
 import java.io.IOException;
 
-public class ProductActivity extends AppCompatActivity {
+public class ProductFragment extends Fragment {
 
-    public static ProductActivity init;
     public static final String TOKEN = Settings.DEMO_TOKEN;
 
     private static final int REQUEST_GALLERY = 1;
     private static final int REQUEST_CAMERA = 2;
     private static final String TAG = "PRODUCT CREATE";
 
+    private Context context;
+    private OnTabClickListner listener;
     private EditText etName;
     private EditText etDescription;
     private EditText etExpenditure;
@@ -50,31 +54,40 @@ public class ProductActivity extends AppCompatActivity {
     private BottomSheetHelper bottomSheetHelper;
     private Uri imageUri;
 
+    public ProductFragment() {
+    }
+
+    public ProductFragment(Context context, OnTabClickListner listener) {
+        this.context = context;
+        this.listener = listener;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_product);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (this.context == null) {
+            this.context = context;
+        }
+    }
 
-        init = this;
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_product, container, false);
 
-        etName = findViewById(R.id.etProductName);
-        etDescription = findViewById(R.id.etProductDescription);
-        etExpenditure = findViewById(R.id.etProductExpenditure);
-        etPrice = findViewById(R.id.etProductPrice);
-        sCategory = findViewById(R.id.spProductCategory);
-        bthCreate = findViewById(R.id.bthProductConfirm);
-        bthImageSelect = findViewById(R.id.ivProductImage);
+        etName = view.findViewById(R.id.etProductName);
+        etDescription = view.findViewById(R.id.etProductDescription);
+        etExpenditure = view.findViewById(R.id.etProductExpenditure);
+        etPrice = view.findViewById(R.id.etProductPrice);
+        sCategory = view.findViewById(R.id.spProductCategory);
+        bthCreate = view.findViewById(R.id.bthProductConfirm);
+        bthImageSelect = view.findViewById(R.id.ivProductImage);
 
         bottomSheetHelper = new BottomSheetHelper(
-                this,
-                v -> OpenGallery(),
-                v -> OpenCamera()
+                requireContext(),
+                v -> openGallery(),
+                v -> openCamera()
         );
 
         bthCreate.setEnabled(false);
@@ -100,6 +113,8 @@ public class ProductActivity extends AppCompatActivity {
         etDescription.addTextChangedListener(formWatcher);
         etExpenditure.addTextChangedListener(formWatcher);
         etPrice.addTextChangedListener(formWatcher);
+
+        return view;
     }
 
     private void createProduct() {
@@ -107,7 +122,7 @@ public class ProductActivity extends AppCompatActivity {
         try {
             price = Integer.parseInt(etPrice.getText().toString().trim());
         } catch (NumberFormatException e) {
-            Toast.makeText(this, "Цена должна быть числом", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Цена должна быть числом", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -120,7 +135,7 @@ public class ProductActivity extends AppCompatActivity {
         );
 
         ProductCreate requestProductCreate = new ProductCreate(
-                this,
+                requireContext(),
                 TOKEN,
                 product,
                 imageUri,
@@ -128,15 +143,16 @@ public class ProductActivity extends AppCompatActivity {
                     @Override
                     public void onCompile(String result) {
                         Log.d(TAG, result);
-                        Toast.makeText(ProductActivity.this, "Товар создан", Toast.LENGTH_SHORT).show();
-                        setResult(RESULT_OK);
-                        finish();
+                        Toast.makeText(requireContext(), "Товар создан", Toast.LENGTH_SHORT).show();
+                        if (listener != null) {
+                            listener.onTabClick(2);
+                        }
                     }
 
                     @Override
                     public void onError(String error) {
                         Log.e(TAG, error);
-                        Toast.makeText(ProductActivity.this, error, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -156,24 +172,24 @@ public class ProductActivity extends AppCompatActivity {
         return editText.getText().toString().trim().isEmpty();
     }
 
-    public void OpenGallery() {
+    public void openGallery() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
         startActivityForResult(Intent.createChooser(intent, "Выберите изображение"), REQUEST_GALLERY);
     }
 
-    public void OpenCamera() {
+    public void openCamera() {
         try {
             Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             File photoFile = File.createTempFile(
                     "my_photo_card",
                     ".jpg",
-                    getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                    requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
             );
 
             imageUri = FileProvider.getUriForFile(
-                    this,
-                    getPackageName() + ".provider",
+                    requireContext(),
+                    requireContext().getPackageName() + ".provider",
                     photoFile
             );
 
@@ -183,15 +199,15 @@ public class ProductActivity extends AppCompatActivity {
             startActivityForResult(pictureIntent, REQUEST_CAMERA);
         } catch (IOException e) {
             Log.e(TAG, "Camera file error", e);
-            Toast.makeText(this, "Не удалось открыть камеру", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Не удалось открыть камеру", Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode != RESULT_OK) {
+        if (resultCode != Activity.RESULT_OK) {
             return;
         }
 
