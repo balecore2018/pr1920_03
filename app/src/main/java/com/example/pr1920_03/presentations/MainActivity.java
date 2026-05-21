@@ -21,7 +21,7 @@ import com.example.network.domains.callbacks.MyResponseCallback;
 import com.example.network.domains.common.Settings;
 import com.example.network.domains.models.Product;
 import com.example.pr1920_03.R;
-import com.example.pr1920_03.domains.PermissionManager;
+import com.example.pr1920_03.domains.managers.PermissionManager;
 import com.example.uicomponents.BthBig;
 import com.example.uicomponents.BthCustom;
 import com.google.gson.GsonBuilder;

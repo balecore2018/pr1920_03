@@ -1,4 +1,4 @@
-package com.example.pr1920_03.domains;
+package com.example.pr1920_03.domains.managers;
 
 import android.Manifest;
 import android.app.Activity;
