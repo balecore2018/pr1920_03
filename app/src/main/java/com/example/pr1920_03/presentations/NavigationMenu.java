@@ -1,4 +1,4 @@
-package com.example.pr1920_03;
+package com.example.pr1920_03.presentations;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.pr1920_03.R;
 import com.example.pr1920_03.domains.MenuItem;
 import com.example.pr1920_03.domains.adapters.MenuAdapter;
 import com.example.pr1920_03.domains.callbacks.OnTabClickListner;
